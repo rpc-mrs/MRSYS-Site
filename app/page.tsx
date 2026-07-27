@@ -1,65 +1,93 @@
-import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="bg-slate-50 min-h-screen">
+      
+      {/* 1. Главный баннер (Hero Section) */}
+      <section className="bg-white border-b border-slate-200">
+        <div className="max-w-4xl mx-auto px-8 py-16 md:py-24 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="max-w-xl space-y-6">
+            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase">
+              Научно-производственная фирма
+            </div>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              Магнитно-резонансные технологии
+            </h1>
+            <p className="text-lg text-slate-600 leading-relaxed">
+              Разработка, проектирование и серийное производство высокотехнологичного оборудования, радиочастотных компонентов и специализированных систем автоматизации.
+            </p>
+            <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+              <Link href="/products" className="bg-blue-600 text-white text-center px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition shadow-xs">
+                Посмотреть продукцию
+              </Link>
+              <Link href="/contacts" className="bg-slate-900 text-white text-center px-6 py-3 rounded-lg font-medium hover:bg-slate-800 transition">
+                Связаться с нами
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Основной презентационный блок (Текст с оригинального сайта) */}
+      <section className="max-w-4xl mx-auto px-8 py-16 space-y-12">
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 md:p-10 shadow-xs space-y-6">
+          <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-100 pb-4">
+            О компании и технологическом потенциале
+          </h2>
+          <div className="text-slate-700 leading-relaxed space-y-4 text-base">
+            <p>
+              Основным направлением деятельности предприятия является разработка и изготовление под заказ различного наукоемкого оборудования радиочастотного диапазона, систем автоматики и сбора данных.
+            </p>
+            <p>
+              Наш коллектив объединяет высококвалифицированных специалистов в области <span className="font-semibold text-slate-900">схемотехники, программирования, конструирования и физики магнитно-резонансных систем</span>. Это позволяет нам решать нестандартные задачи в кратчайшие сроки и с неизменно высоким качеством.
+            </p>
+            <p>
+              Мы осуществляем полный цикл создания продукции: от математического моделирования физических процессов и разработки топологии печатных плат до сборки, отладки готовых изделий и написания управляющего софта.
+            </p>
+          </div>
+        </div>
+
+        {/* 3. Ключевые компетенции / Преимущества */}
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-2xs">
+            <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg mb-4">⚙️</div>
+            <h3 className="font-bold text-slate-900 mb-2">Индивидуальный расчет</h3>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              Проектирование РЧ-катушек, датчиков и узлов под конкретные габариты и физические условия заказчика.
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-2xs">
+            <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg mb-4">🖥️</div>
+            <h3 className="font-bold text-slate-900 mb-2">Собственный софт</h3>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              Разработка надежного программного обеспечения для управления спектрометрами и автоматизированного сбора данных.
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-2xs">
+            <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg mb-4">📦</div>
+            <h3 className="font-bold text-slate-900 mb-2">Полный цикл</h3>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              От идеи, чертежей и моделирования полей до монтажа компонентов и финального тестирования оборудования.
+            </p>
+          </div>
+        </div>
+
+        {/* 4. Призыв к действию (Footer Banner) */}
+        <div className="bg-linear-to-r from-slate-900 to-slate-800 text-white rounded-2xl p-8 text-center space-y-4">
+          <h3 className="text-xl font-bold">Ищете решение для научного или медицинского проекта?</h3>
+          <p className="text-slate-300 max-w-lg mx-auto text-sm">
+            Свяжитесь с нашими инженерами. Мы готовы рассчитать конфигурацию оборудования под ваши технические требования и задачи.
           </p>
+          <div className="pt-2">
+            <Link href="/contacts" className="inline-block bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition">
+              Отправить ТЗ на расчет
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }
