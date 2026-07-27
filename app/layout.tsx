@@ -28,7 +28,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* Шапка сайта с меню навигации */}
         <nav className="border-b bg-white sticky top-0 z-50">
-          <div className="max-w-4xl mx-auto px-8 py-4 flex justify-between items-center">
+          <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
             <Link href="/" className="font-bold text-lg text-slate-900">
               НПФ "МРС"
             </Link>

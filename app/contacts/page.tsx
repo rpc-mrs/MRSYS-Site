@@ -23,7 +23,7 @@ export default function Contacts() {
   };
 
   // Функция обработки отправки формы
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus({ type: null, text: "" });
 

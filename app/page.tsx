@@ -6,7 +6,7 @@ export default function Home() {
       
       {/* 1. Главный баннер (Hero Section) */}
       <section className="bg-white border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-8 py-16 md:py-24 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="max-w-7xl mx-auto px-8 py-16 md:py-24 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="max-w-xl space-y-6">
             <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase">
               Научно-производственная фирма
@@ -15,7 +15,7 @@ export default function Home() {
               Магнитно-резонансные технологии
             </h1>
             <p className="text-lg text-slate-600 leading-relaxed">
-              Разработка, проектирование и серийное производство высокотехнологичного оборудования, радиочастотных компонентов и специализированных систем автоматизации.
+              Разработка, проектирование и серийное производство высокотехнологичного оборудования и специализированных систем автоматизации.
             </p>
             <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link href="/products" className="bg-blue-600 text-white text-center px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition shadow-xs">
@@ -30,20 +30,14 @@ export default function Home() {
       </section>
 
       {/* 2. Основной презентационный блок (Текст с оригинального сайта) */}
-      <section className="max-w-4xl mx-auto px-8 py-16 space-y-12">
+      <section className="max-w-7xl mx-auto px-8 py-16 space-y-12">
         <div className="bg-white border border-slate-200 rounded-2xl p-8 md:p-10 shadow-xs space-y-6">
           <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-100 pb-4">
-            О компании и технологическом потенциале
+            Ядерно-магнитный резонанс
           </h2>
           <div className="text-slate-700 leading-relaxed space-y-4 text-base">
             <p>
-              Основным направлением деятельности предприятия является разработка и изготовление под заказ различного наукоемкого оборудования радиочастотного диапазона, систем автоматики и сбора данных.
-            </p>
-            <p>
-              Наш коллектив объединяет высококвалифицированных специалистов в области <span className="font-semibold text-slate-900">схемотехники, программирования, конструирования и физики магнитно-резонансных систем</span>. Это позволяет нам решать нестандартные задачи в кратчайшие сроки и с неизменно высоким качеством.
-            </p>
-            <p>
-              Мы осуществляем полный цикл создания продукции: от математического моделирования физических процессов и разработки топологии печатных плат до сборки, отладки готовых изделий и написания управляющего софта.
+              Спектроскопия ядерного магнитного резонанса (ЯМР) представляет собой универсальный, надежный и передовой аналитический метод, позволяющий получать информацию о качественном и количественном составе исследуемых образцов. Мы занимаемся разработкой оборудования и методик на основе метода ЯМР, их внедрением, обслуживанием, гарантийным и постгарантийным ремонтом.
             </p>
           </div>
         </div>
@@ -52,25 +46,25 @@ export default function Home() {
         <div className="grid gap-6 md:grid-cols-3">
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-2xs">
             <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg mb-4">⚙️</div>
-            <h3 className="font-bold text-slate-900 mb-2">Индивидуальный расчет</h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              Проектирование РЧ-катушек, датчиков и узлов под конкретные габариты и физические условия заказчика.
+            <h3 className="font-bold text-slate-900 mb-2 text-lg">Метрологическая служба</h3>
+            <p className="text-slate-600 text-md leading-relaxed">
+              Метрологическая служба предприятия координирует работы, связанные с испытаниями и сертификацией продукции, её метрологическим обеспечением, а также метрологическим обеспечением рабочих средств измерения производственных подразделений. Обеспечивает проведение работ по первичной и периодической поверке оборудования заказчиков.
             </p>
           </div>
 
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-2xs">
             <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg mb-4">🖥️</div>
-            <h3 className="font-bold text-slate-900 mb-2">Собственный софт</h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              Разработка надежного программного обеспечения для управления спектрометрами и автоматизированного сбора данных.
+            <h3 className="font-bold text-slate-900 mb-2 text-lg">Производство</h3>
+            <p className="text-slate-600 text-md leading-relaxed">
+              Сборочное производство оснащено современными станками и оборудованием для обработки металлов, пластиков и др. материалов, электромонтажных работ и монтажа печатных плат. Высокая технологическая оснащённость и налаженная система производственной логистики и кооперации позволяют быстро осваивать выпуск новых изделий и оперативно менять ассортимент выпускаемой продукции, обеспечивая при этом высокий уровень её качества. В производстве используются сырье, материалы и комплектующие известных брендов.
             </p>
           </div>
 
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-2xs">
             <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg mb-4">📦</div>
-            <h3 className="font-bold text-slate-900 mb-2">Полный цикл</h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              От идеи, чертежей и моделирования полей до монтажа компонентов и финального тестирования оборудования.
+            <h3 className="font-bold text-slate-900 mb-2 text-base">Разработка</h3>
+            <p className="text-slate-600 text-md leading-relaxed">
+              Разработка новых образцов продукции, выпуск опытных партий и единичных заказных изделий, а также подготовка к серийному выпуску производятся силами высококвалифицированных специалистов Конструкторского отдел предприятия, имеющих многолетний опыт работы в данной области.
             </p>
           </div>
         </div>
