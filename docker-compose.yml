@@ -1,0 +1,44 @@
+# /docker-compose.yml
+version: '3.8'
+
+services:
+  # Наше Next.js приложение
+  nextjs_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs_app
+    restart: always
+    env_file:
+      - .env.production  # Сюда Docker подставит вашу почту dir@mrsys.ru и SMTP_PASSWORD
+    expose:
+      - "3000"
+
+  # Веб-сервер Nginx
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_server
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - certbot-etc:/etc/letsencrypt:ro
+      - certbot-var:/var/www/certbot:ro
+    depends_on:
+      - nextjs_app
+
+  # Автоматический выпуск и обновление SSL
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/www/certbot
+    # Команда проверяет сертификат раз в 12 часов и обновляет, если до конца осталось < 30 дней
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  certbot-etc:
+  certbot-var:
