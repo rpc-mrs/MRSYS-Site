@@ -14,9 +14,7 @@ export async function POST(request: Request) {
     }
 
     // Определяем, куда отправить письмо в зависимости от режима (разработка/деплой)
-    const receiverEmail = process.env.NODE_ENV === "development"
-      ? "vasilii.khomiakov@yandex.ru" // Адрес для тестов на вашем компьютере
-      : "dir@mrsys.ru";               // Реальный адрес компании при деплое
+    const receiverEmail = process.env.SMTP_USER;
 
     // Проверяем, настроены ли переменные окружения
     if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
@@ -60,7 +58,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Ошибка SMTP:", error);
     return NextResponse.json(
-      { error: "Не удалось отправить сообщение. Проверьте логи сервера." },
+      { error: "Не удалось отправить сообщение." },
       { status: 500 }
     );
   }
