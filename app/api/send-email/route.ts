@@ -3,9 +3,14 @@ import nodemailer from "nodemailer";
 
 export async function POST(request: Request) {
   try {
-    const { name, email, phone, message } = await request.json();
+    const { name, email, phone, message, alias } = await request.json();
 
-    // Проверка обязательных полей
+    if (alias) {
+    console.warn("Попытка спама заблокирована через Honeypot");
+    return NextResponse.json({ success: true }, { status: 200 });
+  }
+
+    // 1. Проверка обязательных полей
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: "Отсутствуют обязательные поля" },
@@ -13,10 +18,31 @@ export async function POST(request: Request) {
       );
     }
 
-    // Определяем, куда отправить письмо в зависимости от режима (разработка/деплой)
-    const receiverEmail = process.env.SMTP_USER;
+    // 2. Валидация Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: "Некорректный формат email" },
+        { status: 400 }
+      );
+    }
 
-    // Проверяем, настроены ли переменные окружения
+    // 3. Валидация телефона (если он передан)
+    if (phone) {
+      // Разрешает форматы: +79991112233, 89991112233, 79991112233
+      const phoneRegex = /^(?:\+7|7|8)?\d{10}$/;
+      // Очищаем строку от пробелов, дефисов и скобок перед проверкой
+      const cleanPhone = phone.replace(/[\s\-\(\)]/g, "");
+      
+      if (!phoneRegex.test(cleanPhone)) {
+        return NextResponse.json(
+          { error: "Некорректный формат номера телефона" },
+          { status: 400 }
+        );
+      }
+    }
+
+    // 4. Проверяем, настроены ли переменные окружения
     if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
       console.error("Критическая ошибка: Не настроены переменные SMTP в конфигурации!");
       return NextResponse.json(
@@ -25,7 +51,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Создаем транспорт на основе данных из .env.local (или настроек хостинга)
+    // Безопасное присвоение после успешной проверки env-переменных
+    const receiverEmail = process.env.SMTP_USER;
+
+    // 5. Создаем транспорт nodemailer
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || "smtp.yandex.ru",
       port: Number(process.env.SMTP_PORT) || 465,
@@ -37,9 +66,9 @@ export async function POST(request: Request) {
     });
 
     const mailOptions = {
-      from: process.env.SMTP_USER, // Отправитель всегда должен совпадать с логином авторизации
-      to: receiverEmail,           // Получатель (динамический)
-      replyTo: email,              // Почта клиента, чтобы сразу ответить ему нажатием одной кнопки
+      from: process.env.SMTP_USER,
+      to: receiverEmail,
+      replyTo: email,
       subject: `Новая заявка с сайта от ${name}`,
       html: `
         <h2>Новое обращение через форму контактов</h2>
@@ -51,7 +80,6 @@ export async function POST(request: Request) {
       `,
     };
 
-    // Отправка письма
     await transporter.sendMail(mailOptions);
 
     return NextResponse.json({ success: true }, { status: 200 });

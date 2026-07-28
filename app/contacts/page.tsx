@@ -3,12 +3,12 @@
 import React, { useState } from "react";
 
 export default function Contacts() {
-  // Создаем состояние для полей формы с помощью TypeScript
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
+    alias: "", 
   });
 
   const [status, setStatus] = useState<{
@@ -16,13 +16,11 @@ export default function Contacts() {
     text: string;
   }>({ type: null, text: "" });
 
-  // Функция для отслеживания изменений в полях ввода
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Функция обработки отправки формы
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus({ type: null, text: "" });
@@ -33,7 +31,6 @@ export default function Contacts() {
     }
 
     try {
-      // Отправляем POST запрос к нашему внутреннему API роуту
       const response = await fetch("/api/send-email", {
         method: "POST",
         headers: {
@@ -53,7 +50,7 @@ export default function Contacts() {
         text: "Спасибо! Ваше сообщение успешно доставлено на наш почтовый ящик.",
       });
       
-      setFormData({ name: "", email: "", phone: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", message: "", alias: "" });
     } catch (err: any) {
       setStatus({ 
         type: "error", 
@@ -67,11 +64,25 @@ export default function Contacts() {
       <h1 className="text-3xl font-bold text-slate-900 mb-8">Контакты</h1>
 
       <div className="grid gap-12 md:grid-cols-2">
-        {/* Левая колонка: Интерактивная форма обратной связи */}
         <div className="bg-white border rounded-xl p-6 shadow-xs">
           <h2 className="text-xl font-bold text-slate-800 mb-4">Напишите нам</h2>
           
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* 2. Поле-ловушка. Полностью скрыто от людей, но доступно для ботов */}
+            <div className="hidden" aria-hidden="true">
+              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">
+                Оставьте это поле пустым
+              </label>
+              <input
+                type="text"
+                name="alias"
+                value={formData.alias}
+                onChange={handleChange}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
             <div>
               <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Ваше имя *</label>
               <input
@@ -117,11 +128,10 @@ export default function Contacts() {
                 onChange={handleChange}
                 rows={4}
                 className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-                placeholder="Опишите необходимое оборудование или техническую задачу..."
+                placeholder="Опишите необходимое оборудование или техническую задачу"
               ></textarea>
             </div>
 
-            {/* Вывод статуса отправки */}
             {status.type && (
               <div className={`p-3 rounded-lg text-xs font-medium ${
                 status.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"
@@ -139,7 +149,6 @@ export default function Contacts() {
           </form>
         </div>
 
-        {/* Правая колонка: Реальные контакты фирмы */}
         <div className="space-y-6">
           <div className="bg-slate-50 p-6 rounded-xl border border-slate-100">
             <h2 className="text-xl font-bold text-slate-800 mb-4">НПФ «Магнитно-резонансные системы»</h2>
