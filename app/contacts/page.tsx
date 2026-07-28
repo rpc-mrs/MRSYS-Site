@@ -16,6 +16,8 @@ export default function Contacts() {
     text: string;
   }>({ type: null, text: "" });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -26,9 +28,11 @@ export default function Contacts() {
     setStatus({ type: null, text: "" });
 
     if (!formData.name || !formData.email || !formData.message) {
-      setStatus({ type: "error", text: "Пожалуйста, заполните обязательные поля (Имя, Email, Сообщение)" });
+      setStatus({ type: "error", text: "Пожалуйста, заполните обязательные поля (имя, email, сообщение)" });
       return;
     }
+
+    setIsSubmitting(true);
 
     try {
       const response = await fetch("/api/send-email", {
@@ -56,6 +60,8 @@ export default function Contacts() {
         type: "error", 
         text: err.message || "Произошла ошибка при отправке. Проверьте конфигурацию сервера." 
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -142,9 +148,14 @@ export default function Contacts() {
 
             <button
               type="submit"
-              className="w-full bg-slate-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition"
+              disabled={isSubmitting}
+              className={`w-full bg-slate-900 text-white py-2.5 rounded-lg text-sm font-medium transition cursor-pointer 
+                ${isSubmitting 
+                  ? "opacity-50 cursor-not-allowed" 
+                  : "hover:bg-slate-800"
+                }`}
             >
-              Отправить запрос
+              {isSubmitting ? "Отправка..." : "Отправить запрос"}
             </button>
           </form>
         </div>
