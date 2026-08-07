@@ -12,7 +12,7 @@ export default function Home() {
               Научно-производственная фирма
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-              Магнитно-резонансные технологии
+              Магнитно-резонансные системы
             </h1>
             <p className="text-lg text-slate-600 leading-relaxed">
               Разработка, проектирование и серийное производство высокотехнологичного оборудования и специализированных систем автоматизации.

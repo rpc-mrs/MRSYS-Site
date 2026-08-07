@@ -223,8 +223,7 @@ export default function Contacts() {
         <iframe 
           src="https://yandex.ru/map-widget/v1/?um=constructor%3A044ba442820f802b37cb9d6b9e3716ae58b7d62e79fe5052da94f859c1a0672e&amp;source=constructor" 
           width="100%" 
-          height="100%" 
-          loading="lazy"
+          height="100%"
           title="Яндекс Карта с адресом организации"
           className="rounded-xl border-0"
         />

@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "НПФ — Магнитно-резонансные технологии",
+  title: "НПФ — Магнитно-резонансные системы",
   description: "Разработка и производство высокотехнологичного оборудования",
 };
 
