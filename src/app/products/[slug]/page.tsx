@@ -8,12 +8,13 @@ export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}): Metadata {
-  const product = getProduct(params.slug);
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const product = getProduct(slug);
   if (!product) return {};
   return {
     title: product.name,
@@ -28,8 +29,13 @@ export function generateMetadata({
   };
 }
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const product = getProduct(params.slug);
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const product = getProduct(slug);
   if (!product) notFound();
 
   const productJsonLd = {
@@ -38,14 +44,12 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     name: product.name,
     description: product.summary,
     url: `${SITE_URL}/products/${product.slug}`,
-    brand: { "@type": "Brand", name: "MRSYS" },
-    additionalProperty: product.specs
-      .filter((s) => !s.value.startsWith("[TODO"))
-      .map((s) => ({
-        "@type": "PropertyValue",
-        name: s.label,
-        value: s.value,
-      })),
+    brand: { "@type": "Brand", name: 'ООО НПФ «МРС»' },
+    additionalProperty: product.specs.map((s) => ({
+      "@type": "PropertyValue",
+      name: s.label,
+      value: s.value,
+    })),
   };
 
   return (
@@ -101,14 +105,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         <div className="space-y-4">
           <p className="eyebrow">Описание</p>
           {product.description.map((para, i) => (
-            <p
-              key={i}
-              className={
-                para.startsWith("[TODO")
-                  ? "font-mono text-xs uppercase tracking-wide text-signal"
-                  : "text-muted"
-              }
-            >
+            <p key={i} className="text-muted">
               {para}
             </p>
           ))}

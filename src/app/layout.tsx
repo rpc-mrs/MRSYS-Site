@@ -67,6 +67,8 @@ const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: SITE_NAME,
+  legalName: 'ООО НПФ «МРС»',
+  taxID: "2311292920",
   url: SITE_URL,
   description:
     "Производство и поставка ЯМР-анализаторов и лабораторного оборудования для контроля качества семян масличных культур.",

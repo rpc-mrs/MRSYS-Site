@@ -15,8 +15,7 @@ export default function Header() {
             MRSYS
           </span>
           <span className="hidden font-mono text-xs uppercase tracking-widest text-muted sm:inline">
-            {/* TODO: replace with the real company name */}
-            ЯМР-оборудование
+            ООО НПФ «МРС»
           </span>
         </Link>
         <nav className="flex items-center gap-1 sm:gap-2">

@@ -28,7 +28,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-line py-4 text-center font-mono text-xs text-muted">
-        © {new Date().getFullYear()} MRSYS. Все права защищены.
+        © {new Date().getFullYear()} ООО НПФ «МРС», ИНН 2311292920. Все права защищены.
       </div>
     </footer>
   );
