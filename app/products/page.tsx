@@ -1,0 +1,28 @@
+import type { Metadata } from "next";
+import ProductCard from "@/components/ProductCard";
+import { products } from "@/lib/products";
+
+export const metadata: Metadata = {
+  title: "Продукция — MRSYS",
+  description: "ЯМР-анализатор АКС-2020, термостаты для пробоподготовки и другое лабораторное оборудование.",
+};
+
+export default function ProductsPage() {
+  return (
+    <main className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <p className="eyebrow">Каталог</p>
+      <h1 className="mt-3 font-display text-3xl font-bold text-ink sm:text-4xl">
+        Продукция
+      </h1>
+      <p className="mt-4 max-w-2xl text-muted">
+        Приборы для экспресс-контроля качества семян масличных культур и
+        продуктов их переработки.
+      </p>
+      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {products.map((p) => (
+          <ProductCard key={p.slug} product={p} />
+        ))}
+      </div>
+    </main>
+  );
+}

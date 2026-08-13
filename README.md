@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MRSYS — сайт на Next.js + TypeScript
 
-## Getting Started
+Три страницы: главная, каталог продукции с карточками на отдельные страницы
+товаров, и контакты с формой обратной связи, отправляющей письмо по SMTP.
 
-First, run the development server:
+## Запуск
 
 ```bash
+npm install
+cp .env.example .env.local   # заполните реальные SMTP-данные
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Откройте http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Переменные окружения (`.env.local`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+SMTP_HOST=smtp.yandex.ru
+SMTP_PORT=465
+SMTP_USER=your-mailbox@yandex.ru
+SMTP_PASSWORD=пароль-приложения
+CONTACT_TO=dir@mrsys.ru   # необязательно, по умолчанию = SMTP_USER
+```
 
-## Learn More
+Для Yandex-почты `SMTP_PASSWORD` — это **пароль приложения**, а не обычный
+пароль от ящика (создаётся в настройках безопасности Яндекс ID).
 
-To learn more about Next.js, take a look at the following resources:
+Никогда не коммитьте `.env.local` — он уже добавлен в `.gitignore`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Структура
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/
+  page.tsx                — главная страница
+  products/page.tsx       — каталог продукции
+  products/[slug]/page.tsx— страница отдельного товара
+  contacts/page.tsx        — контакты + форма
+  api/send-email/route.ts — обработчик формы (nodemailer)
+lib/products.ts            — данные о товарах (название, описание,
+                              характеристики, изображения, видео)
+components/                — Header, Footer, ProductCard, Waveform (SVG)
+```
 
-## Deploy on Vercel
+## Что нужно доделать перед публикацией
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Автоматический доступ к mrsys.ru заблокирован его `robots.txt`, поэтому
+текст на главной странице и характеристики АКС-2020 и термостата — это
+черновик на основе общих данных о ЯМР-анализаторах масличности. Найдите
+`[TODO` по всему проекту и замените плейсхолдеры на реальные:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Главная страница** (`app/page.tsx`) — блок «О компании»: реальный текст
+  компании.
+- **`lib/products.ts`** — точные характеристики АКС-2020 и термостата,
+  реальные фотографии (положите файлы в `public/images/` и раскомментируйте
+  `<img>` в `ProductCard.tsx` и `app/products/[slug]/page.tsx`), а также
+  `videoUrl` — ссылку на YouTube/RuTube embed, если видео есть.
+- **`components/Header.tsx` / `Footer.tsx`** — официальное название
+  компании и логотип, если отличаются от placeholder «MRSYS».
+
+## Добавление товара
+
+Добавьте объект в массив `products` в `lib/products.ts` — страница
+`/products/<slug>` создастся автоматически.
+
+## Форма обратной связи
+
+- Скрытое поле `alias` — honeypot против ботов: реальные пользователи его
+  не видят и не заполняют; если оно пришло непустым, письмо не отправляется,
+  но пользователю показывается «успех», чтобы не подсказывать боту.
+- Обязательные поля: имя, email, сообщение. Телефон — опционален.
+- При отправке письмо уходит на `CONTACT_TO` (или `SMTP_USER`), с `replyTo`,
+  указывающим на email отправителя, чтобы отвечать можно было прямо на
+  письмо.

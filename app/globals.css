@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: #12181F;
+  background: #F7F8FA;
+}
+
+::selection {
+  background: #0E7C86;
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid #0E7C86;
+  outline-offset: 2px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0E7C86;
+}
+
+.grid-texture {
+  background-image:
+    linear-gradient(to right, rgba(18,24,31,0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(18,24,31,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Signature element: NMR resonance waveform, drawn once on load */
+.waveform-path {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: draw-waveform 2.4s ease-out forwards;
+}
+
+@keyframes draw-waveform {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waveform-path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
