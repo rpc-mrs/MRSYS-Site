@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProduct, products } from "@/lib/products";
+import { SITE_URL } from "@/lib/site";
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
@@ -15,8 +16,15 @@ export function generateMetadata({
   const product = getProduct(params.slug);
   if (!product) return {};
   return {
-    title: `${product.name} — MRSYS`,
+    title: product.name,
     description: product.summary,
+    alternates: { canonical: `/products/${product.slug}` },
+    openGraph: {
+      title: product.name,
+      description: product.summary,
+      url: `${SITE_URL}/products/${product.slug}`,
+      type: "website",
+    },
   };
 }
 
@@ -24,8 +32,29 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const product = getProduct(params.slug);
   if (!product) notFound();
 
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.summary,
+    url: `${SITE_URL}/products/${product.slug}`,
+    brand: { "@type": "Brand", name: "MRSYS" },
+    additionalProperty: product.specs
+      .filter((s) => !s.value.startsWith("[TODO"))
+      .map((s) => ({
+        "@type": "PropertyValue",
+        name: s.label,
+        value: s.value,
+      })),
+  };
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <Link href="/products" className="text-sm font-semibold text-signal hover:underline">
         ← Вся продукция
       </Link>

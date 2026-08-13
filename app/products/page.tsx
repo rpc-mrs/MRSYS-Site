@@ -3,8 +3,11 @@ import ProductCard from "@/components/ProductCard";
 import { products } from "@/lib/products";
 
 export const metadata: Metadata = {
-  title: "Продукция — MRSYS",
-  description: "ЯМР-анализатор АКС-2020, термостаты для пробоподготовки и другое лабораторное оборудование.",
+  title: "Продукция: ЯМР-анализатор АКС-2020, термостат",
+  description:
+    "ЯМР-анализатор АКС-2020 для измерения масличности и влажности семян, термостат для пробоподготовки. Характеристики, фото, консультация.",
+  keywords: ["ямр анализатор", "акс-2020", "термостат для проб", "анализатор масличности"],
+  alternates: { canonical: "/products" },
 };
 
 export default function ProductsPage() {

@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Waveform from "@/components/Waveform";
 import { products } from "@/lib/products";
+
+export const metadata: Metadata = {
+  title: "ЯМР-анализатор масличности и влажности АКС-2020",
+  description:
+    "Производим и поставляем ЯМР-анализатор АКС-2020 и лабораторные термостаты для экспресс-контроля масличности и влажности семян масличных культур.",
+  alternates: { canonical: "/" },
+};
 
 const STATS = [
   { value: "150+", label: "предприятий используют ЯМР-анализаторы" },
