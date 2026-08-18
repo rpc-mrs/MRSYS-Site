@@ -25,7 +25,7 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "MRSYS — ЯМР-анализаторы и лабораторное оборудование",
+    default: "Магнитно-резонансные системы",
     template: `%s — ${SITE_NAME}`,
   },
   description:
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     locale: "ru_RU",
     siteName: SITE_NAME,
     url: SITE_URL,
-    title: "MRSYS — ЯМР-анализаторы и лабораторное оборудование",
+    title: "Магнитно-резонансные системы",
     description:
       "ЯМР-анализатор АКС-2020 и термостаты для контроля масличности и влажности семян масличных культур.",
   },

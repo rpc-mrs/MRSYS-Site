@@ -4,7 +4,7 @@ import Waveform from "@/components/Waveform";
 import { products } from "@/lib/products";
 
 export const metadata: Metadata = {
-  title: "ЯМР-анализатор масличности и влажности АКС-2020",
+  title: { absolute: "Магнитно-резонансные системы" },
   description:
     "Производим и поставляем ЯМР-анализатор АКС-2020 и лабораторные термостаты для экспресс-контроля масличности и влажности семян масличных культур.",
   alternates: { canonical: "/" },
