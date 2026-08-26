@@ -273,8 +273,14 @@ export default function ContactsPage() {
                   Электронная почта
                 </h3>
                 <a
+                  href="mailto:info@mrsys.ru"
+                  className="block text-base font-semibold text-signal hover:underline"
+                >
+                  info@mrsys.ru
+                </a>
+                <a
                   href="mailto:sacred_jktu@bk.ru"
-                  className="text-base font-semibold text-signal hover:underline"
+                  className="block text-base font-semibold text-signal hover:underline"
                 >
                   sacred_jktu@bk.ru
                 </a>

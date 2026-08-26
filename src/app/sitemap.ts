@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
 import { products } from "@/lib/products";
+import { services } from "@/lib/services";
 import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/products", "/contacts"].map((path) => ({
+  const staticRoutes = ["", "/products", "/services", "/contacts"].map((path) => ({
     url: `${SITE_URL}${path}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
@@ -17,5 +18,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  return [...staticRoutes, ...productRoutes];
+  const serviceRoutes = services.map((s) => ({
+    url: `${SITE_URL}/services/${s.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  return [...staticRoutes, ...productRoutes, ...serviceRoutes];
 }

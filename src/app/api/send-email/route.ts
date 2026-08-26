@@ -70,7 +70,7 @@ export async function POST(request: Request) {
 
   try {
     await transporter.sendMail({
-      from: `"Сайт MRSYS" <${SMTP_USER}>`,
+      from: `"Заявка с сайта" <${SMTP_USER}>`,
       to: recipient,
       replyTo: email,
       subject: `Новая заявка с сайта — ${name}`,

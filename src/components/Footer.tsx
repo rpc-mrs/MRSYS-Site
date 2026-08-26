@@ -14,8 +14,8 @@ export default function Footer() {
             </a>
           </p>
           <p>
-            <a href="mailto:sacred_jktu@bk.ru" className="hover:text-signal">
-              sacred_jktu@bk.ru
+            <a href="mailto:info@mrsys.ru" className="hover:text-signal">
+              info@mrsys.ru
             </a>
           </p>
         </div>

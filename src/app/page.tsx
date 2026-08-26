@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Waveform from "@/components/Waveform";
 import { products } from "@/lib/products";
+import { services } from "@/lib/services";
 
 export const metadata: Metadata = {
   title: { absolute: "Магнитно-резонансные системы" },
@@ -11,9 +12,23 @@ export const metadata: Metadata = {
 };
 
 const STATS = [
-  { value: "150+", label: "предприятий используют ЯМР-анализаторы" },
-  { value: "2", label: "показателя за один цикл: масличность и влажность" },
-  { value: "0", label: "химических реактивов при пробоподготовке" },
+  {
+    value: "720+",
+    label: "поверок проведено с использованием разработанных и утвержденных «ГСО 12699-2024 СО масличности и влажности семян масличных культур и продуктов их переработки (имитаторы) (комплект МРС)",
+  },
+  { value: "380+", label: "приборов обслуживаем в общей сложности" },
+  { value: "250+", label: "поверок ЯМР-анализаторов выполняется каждый год" },
+  { value: "30 секунд", label: "время измерения одной пробы масличных семян" },
+  { value: "28", label: "регионов России, в которых производим обслуживание, поверки и поставки ЯМР" },
+  { value: "20", label: "термостатов на элементах Пельтье с аттестацией поставлено за 1 год" },
+  {
+    value: "15",
+    label: "ЯМР-анализаторов АКС-2020 было выпущено за неполный год с момента их разработки и утверждения в качестве средства измерения",
+  },
+  { value: "7 лет", label: "на рынке — с 9 августа 2019 года" },
+  { value: "3", label: "страны СНГ, в которые поставляли оборудование" },
+  { value: "0,5", label: "абсолютная погрешность измерения масличности и влажности масличных семян и продуктов их переработки" },
+  { value: "0", label: "количество используемых веществ необходимых для измерения масличности семян" },
 ];
 
 export default function Home() {
@@ -22,14 +37,25 @@ export default function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-line grid-texture">
         <div className="mx-auto max-w-6xl px-4 pb-20 pt-16 sm:px-6 sm:pt-24">
-          <p className="eyebrow">Ядерный магнитный резонанс в лаборатории</p>
+          <p className="eyebrow">О методе</p>
           <h1 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-[1.1] tracking-tight text-ink sm:text-5xl">
-            Экспресс-анализ масличности и влажности — без реактивов, без разрушения пробы
+            Ядерный магнитный резонанс
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-muted">
-            Производим и поставляем ЯМР-анализаторы и лабораторные термостаты
-            для контроля качества семян масличных культур и продуктов их
-            переработки.
+          <p className="mt-6 max-w-2xl text-lg text-muted">
+            Спектроскопия ядерного магнитного резонанса (ЯМР) — универсальный
+            аналитический метод для определения качественного и
+            количественного состава образцов. Высокая информативность,
+            воспроизводимость и точность, неразрушающий характер измерений,
+            экологичность, отсутствие сложной пробоподготовки и высокая
+            скорость делают ЯМР одним из наиболее востребованных инструментов
+            в производственных и научно-исследовательских лабораториях.
+          </p>
+          <p className="mt-4 max-w-2xl text-muted">
+            Мы выполняем полный цикл работ: разработку оборудования и методик
+            на основе ЯМР, их метрологическое обеспечение, внедрение в
+            производственные и исследовательские процессы, сервисное
+            обслуживание, гарантийный и постгарантийный ремонт, поверку
+            ЯМР-анализаторов.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -37,6 +63,12 @@ export default function Home() {
               className="rounded-xl bg-ink px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-steel-700"
             >
               Смотреть продукцию
+            </Link>
+            <Link
+              href="/services"
+              className="rounded-xl border border-line bg-white px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-steel-300"
+            >
+              Наши услуги
             </Link>
             <Link
               href="/contacts"
@@ -56,40 +88,45 @@ export default function Home() {
 
       {/* Stats */}
       <section className="border-b border-line bg-white">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-8 px-4 py-12 sm:px-6 sm:grid-cols-3 lg:grid-cols-4">
           {STATS.map((s) => (
             <div key={s.label}>
-              <p className="font-display text-4xl font-bold text-steel-700">{s.value}</p>
-              <p className="mt-2 text-sm text-muted">{s.label}</p>
+              <p className="font-display text-3xl font-bold text-steel-700">{s.value}</p>
+              <p className="mt-1.5 text-xs text-muted">{s.label}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* About */}
+      {/* Services teaser */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="grid gap-10 md:grid-cols-2">
+        <div className="mb-8 flex items-end justify-between">
           <div>
-            <p className="eyebrow">О компании</p>
+            <p className="eyebrow">Услуги</p>
             <h2 className="mt-3 font-display text-2xl font-bold text-ink">
-              Оборудование для контроля качества масличного сырья
+              Поверка, ремонт, модернизация, НИОКР
             </h2>
           </div>
-          <div className="space-y-4 text-muted">
-            <p>
-              Метод ЯМР позволяет определить масличность и влажность пробы за
-              одно измерение, без химической подготовки образца. Это делает
-              анализ быстрым, воспроизводимым и не зависящим от квалификации
-              оператора — что особенно важно на приёмке сырья и в лабораториях
-              масложировых предприятий.
-            </p>
-            <p>
-              Мы занимаемся разработкой оборудования и методик на основе
-              ядерного магнитного резонанса, их внедрением на предприятиях,
-              а также сервисным, гарантийным и постгарантийным обслуживанием
-              поставленных приборов.
-            </p>
-          </div>
+          <Link href="/services" className="text-sm font-semibold text-signal hover:underline">
+            Все услуги →
+          </Link>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2">
+          {services.map((s) => (
+            <Link
+              key={s.slug}
+              href={`/services/${s.slug}`}
+              className="group rounded-2xl border border-line bg-white p-6 transition-all hover:border-steel-300 hover:shadow-sm"
+            >
+              <h3 className="font-display text-lg font-bold text-ink group-hover:text-steel-700">
+                {s.name}
+              </h3>
+              <p className="mt-2 text-sm text-muted">{s.tagline}</p>
+              <span className="mt-4 inline-block text-sm font-semibold text-signal">
+                Подробнее →
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 
