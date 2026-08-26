@@ -1,4 +1,4 @@
-'use client'; // Обязательно добавляем эту директиву в самый верх для работы хуков
+'use client';
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -42,7 +42,7 @@ export default function Header() {
           >
             <Link
               href="/services"
-              onClick={() => setIsOpen(false)} // Закрываем при клике на саму категорию
+              onClick={() => setIsOpen(false)}
               className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-ink/80 transition-colors hover:bg-steel-50 hover:text-steel-700"
             >
               Услуги

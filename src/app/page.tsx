@@ -11,6 +11,29 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+function getYearsOnMarket(): string {
+  const startDate = new Date("2019-08-09");
+  const today = new Date();
+  
+  let years = today.getFullYear() - startDate.getFullYear();
+  const monthDiff = today.getMonth() - startDate.getMonth();
+  
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < startDate.getDate())) {
+    years--;
+  }
+
+  const getYearWord = (num: number) => {
+    const lastDigit = num % 10;
+    const lastTwoDigits = num % 100;
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 14) return "лет";
+    if (lastDigit === 1) return "год";
+    if (lastDigit >= 2 && lastDigit <= 4) return "года";
+    return "лет";
+  };
+
+  return `${years} ${getYearWord(years)}`;
+}
+
 const STATS = [
   {
     value: "720+",
@@ -25,7 +48,7 @@ const STATS = [
     value: "15",
     label: "ЯМР-анализаторов АКС-2020 было выпущено за неполный год с момента их разработки и утверждения в качестве средства измерения",
   },
-  { value: "7 лет", label: "на рынке — с 9 августа 2019 года" },
+  { value: getYearsOnMarket(), label: "на рынке — с 9 августа 2019 года" },
   { value: "3", label: "страны СНГ, в которые поставляли оборудование" },
   { value: "0,5", label: "абсолютная погрешность измерения масличности и влажности масличных семян и продуктов их переработки" },
   { value: "0", label: "количество используемых веществ необходимых для измерения масличности семян" },
