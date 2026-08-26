@@ -58,3 +58,7 @@ body {
     scroll-behavior: auto;
   }
 }
+
+html {
+  scrollbar-gutter: stable;
+}
