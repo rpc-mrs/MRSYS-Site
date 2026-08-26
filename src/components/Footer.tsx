@@ -1,25 +1,43 @@
 export default function Footer() {
   return (
-    <footer className="border-t border-line bg-white">
+    <footer className="border-t border-line bg-paper">
+      {/* Основная сетка футера */}
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
-        <div className="text-sm text-muted">
-          <p className="mb-2 font-semibold text-ink">Адрес</p>
-          <p>Краснодар, пос. Краснодарский,<br />ул. Платнировская, д. 7, пом. 1</p>
-        </div>
-        <div className="text-sm text-muted">
-          <p className="mb-2 font-semibold text-ink">Контакты</p>
-          <p>
-            <a href="tel:+79024032020" className="hover:text-signal">
-              +7 (902) 403-20-20
-            </a>
+        
+        {/* Блок адреса */}
+        <div className="text-sm text-ink/80">
+          <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
+            Адрес
           </p>
-          <p>
-            <a href="mailto:info@mrsys.ru" className="hover:text-signal">
-              info@mrsys.ru
-            </a>
+          <p className="leading-relaxed">
+            Краснодар, пос. Краснодарский,
+            <br />
+            ул. Платнировская, д. 7, пом. 1
           </p>
         </div>
+
+        {/* Блок контактов */}
+        <div className="text-sm text-ink/80">
+          <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
+            Контакты
+          </p>
+          <div className="space-y-1">
+            <p>
+              <a href="tel:+79024032020" className="transition-colors hover:text-signal">
+                +7 (902) 403-20-20
+              </a>
+            </p>
+            <p>
+              <a href="mailto:info@mrsys.ru" className="transition-colors hover:text-signal">
+                info@mrsys.ru
+              </a>
+            </p>
+          </div>
+        </div>
+
       </div>
+
+      {/* Нижняя плашка (Копирайт) */}
       <div className="border-t border-line py-4 text-center font-mono text-xs text-muted">
         © {new Date().getFullYear()} ООО НПФ «МРС», ИНН 2311292920. Все права защищены.
       </div>

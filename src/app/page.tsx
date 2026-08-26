@@ -98,30 +98,30 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services teaser */}
+      {/* Product teaser */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="mb-8 flex items-end justify-between">
           <div>
-            <p className="eyebrow">Услуги</p>
+            <p className="eyebrow">Продукция</p>
             <h2 className="mt-3 font-display text-2xl font-bold text-ink">
-              Поверка, ремонт, модернизация, НИОКР
+              Приборы
             </h2>
           </div>
-          <Link href="/services" className="text-sm font-semibold text-signal hover:underline">
-            Все услуги →
+          <Link href="/products" className="text-sm font-semibold text-signal hover:underline">
+            Вся продукция →
           </Link>
         </div>
         <div className="grid gap-6 sm:grid-cols-2">
-          {services.map((s) => (
+          {products.map((p) => (
             <Link
-              key={s.slug}
-              href={`/services/${s.slug}`}
-              className="group rounded-2xl border border-line bg-white p-6 transition-all hover:border-steel-300 hover:shadow-sm"
+              key={p.slug}
+              href={`/products/${p.slug}`}
+              className="group rounded-2xl border border-line bg-paper p-6 transition-all hover:border-steel-300 hover:shadow-sm"
             >
               <h3 className="font-display text-lg font-bold text-ink group-hover:text-steel-700">
-                {s.name}
+                {p.name}
               </h3>
-              <p className="mt-2 text-sm text-muted">{s.tagline}</p>
+              <p className="mt-2 text-sm text-muted">{p.tagline}</p>
               <span className="mt-4 inline-block text-sm font-semibold text-signal">
                 Подробнее →
               </span>
@@ -130,31 +130,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Product teaser */}
+      {/* Services teaser */}
       <section className="border-t border-line bg-white">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
           <div className="mb-8 flex items-end justify-between">
             <div>
-              <p className="eyebrow">Продукция</p>
+              <p className="eyebrow">Услуги</p>
               <h2 className="mt-3 font-display text-2xl font-bold text-ink">
-                Приборы
+                Поверка, ремонт, модернизация, НИОКР
               </h2>
             </div>
-            <Link href="/products" className="text-sm font-semibold text-signal hover:underline">
-              Вся продукция →
+            <Link href="/services" className="text-sm font-semibold text-signal hover:underline">
+              Все услуги →
             </Link>
           </div>
           <div className="grid gap-6 sm:grid-cols-2">
-            {products.map((p) => (
+            {services.map((s) => (
               <Link
-                key={p.slug}
-                href={`/products/${p.slug}`}
-                className="group rounded-2xl border border-line bg-paper p-6 transition-all hover:border-steel-300 hover:shadow-sm"
+                key={s.slug}
+                href={`/services/${s.slug}`}
+                className="group rounded-2xl border border-line bg-white p-6 transition-all hover:border-steel-300 hover:shadow-sm"
               >
                 <h3 className="font-display text-lg font-bold text-ink group-hover:text-steel-700">
-                  {p.name}
+                  {s.name}
                 </h3>
-                <p className="mt-2 text-sm text-muted">{p.tagline}</p>
+                <p className="mt-2 text-sm text-muted">{s.tagline}</p>
                 <span className="mt-4 inline-block text-sm font-semibold text-signal">
                   Подробнее →
                 </span>
