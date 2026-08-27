@@ -97,7 +97,7 @@ export default function Home() {
           </div>
         </div>
         <div className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
-          <Waveform className="h-32 w-full sm:h-40" />
+          <Waveform className="h-32 sm:h-40" />
           <p className="mt-2 font-mono text-xs text-muted">
             Сигнал свободной индукции — характерная кривая ЯМР-измерения
           </p>
