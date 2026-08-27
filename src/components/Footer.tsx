@@ -28,8 +28,8 @@ export default function Footer() {
               </a>
             </p>
             <p>
-              <a href="mailto:info@mrsys.ru" className="transition-colors hover:text-signal">
-                info@mrsys.ru
+              <a href="mailto:sacred_jktu@bk.ru" className="transition-colors hover:text-signal">
+                sacred_jktu@bk.ru
               </a>
             </p>
           </div>
