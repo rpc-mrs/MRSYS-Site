@@ -11,8 +11,15 @@ const TABS = [
 
 type TabId = (typeof TABS)[number]["id"];
 
-export default function ProductTabs({ product }: { product: Product }) {
+export default function ProductTabs({
+  product,
+  description,
+}: {
+  product: Product;
+  description: string[];
+}) {
   const availableTabs = TABS.filter((t) => {
+    if (t.id === "description") return description.length > 0;
     if (t.id === "features") return !!product.features?.length;
     return true;
   });
@@ -41,7 +48,7 @@ export default function ProductTabs({ product }: { product: Product }) {
       <div className="pt-8">
         {active === "description" && (
           <div className="max-w-2xl space-y-4">
-            {product.description.map((p, i) => (
+            {description.map((p, i) => (
               <p key={i} className="text-muted">
                 {p}
               </p>

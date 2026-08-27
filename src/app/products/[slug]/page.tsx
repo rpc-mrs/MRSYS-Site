@@ -40,6 +40,8 @@ export default async function ProductPage({
   const product = getProduct(slug);
   if (!product) notFound();
 
+  const pinnedParagraphs = product.pinned ?? [];
+
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -72,6 +74,11 @@ export default async function ProductPage({
             {product.name}
           </h1>
           <p className="mt-4 text-lg text-muted">{product.tagline}</p>
+          {pinnedParagraphs.map((p, i) => (
+            <p key={i} className="mt-4 text-muted">
+              {p}
+            </p>
+          ))}
         </div>
 
         {/* Gallery */}
@@ -97,7 +104,7 @@ export default async function ProductPage({
         </div>
       )}
 
-      <ProductTabs product={product} />
+      <ProductTabs product={product} description={product.description} />
 
       <div className="mt-14 rounded-2xl border border-line bg-white p-8 text-center">
         <p className="font-display text-xl font-bold text-ink">
