@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ProductImage from "@/components/ProductImage";
 import { notFound } from "next/navigation";
 import { getProduct, products } from "@/lib/products";
 import { SITE_URL } from "@/lib/site";
@@ -75,13 +76,7 @@ export default async function ProductPage({
         {/* Gallery */}
         <div className="grid gap-4">
           {product.images.map((img) => (
-            <div
-              key={img.src}
-              className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-line bg-steel-50 font-mono text-xs uppercase tracking-widest text-steel-300"
-            >
-              {/* TODO: swap for <img src={img.src} alt={img.alt} /> once real photos are in /public/images */}
-              {img.alt}
-            </div>
+            <ProductImage key={img.src} src={img.src} alt={img.alt} />
           ))}
         </div>
       </div>
@@ -123,6 +118,20 @@ export default async function ProductPage({
           </dl>
         </div>
       </div>
+
+      {product.features && (
+        <div className="mt-14">
+          <p className="eyebrow mb-4">Особенности</p>
+          <ul className="space-y-3">
+            {product.features.map((f, i) => (
+              <li key={i} className="flex gap-3 text-muted">
+                <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="mt-14 rounded-2xl border border-line bg-white p-8 text-center">
         <p className="font-display text-xl font-bold text-ink">
