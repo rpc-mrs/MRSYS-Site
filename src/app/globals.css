@@ -57,6 +57,26 @@ body {
   html {
     scroll-behavior: auto;
   }
+  .stat-flip {
+    animation: none;
+  }
+}
+
+/* Stats carousel: each pair "flips" in like a page turn when it appears */
+.stat-flip {
+  animation: stat-flip-in 0.5s ease-out;
+  transform-origin: top center;
+}
+
+@keyframes stat-flip-in {
+  from {
+    opacity: 0;
+    transform: rotateX(-35deg) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: rotateX(0) translateY(0);
+  }
 }
 
 html {

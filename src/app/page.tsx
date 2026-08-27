@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Waveform from "@/components/Waveform";
+import StatsCarousel from "@/components/StatsCarousel";
 import { products } from "@/lib/products";
 import { services } from "@/lib/services";
 
@@ -105,13 +106,8 @@ export default function Home() {
 
       {/* Stats */}
       <section className="border-b border-line bg-white">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-8 px-4 py-12 sm:px-6 sm:grid-cols-3 lg:grid-cols-4">
-          {STATS.map((s) => (
-            <div key={s.label}>
-              <p className="font-display text-3xl font-bold text-steel-700">{s.value}</p>
-              <p className="mt-1.5 text-xs text-muted">{s.label}</p>
-            </div>
-          ))}
+        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
+          <StatsCarousel stats={STATS} />
         </div>
       </section>
 
