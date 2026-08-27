@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import YandexMetrika from "@/components/YandexMetrika";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
@@ -94,6 +95,7 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body className="flex min-h-screen flex-col font-body">
+        <YandexMetrika />
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
