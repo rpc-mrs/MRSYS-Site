@@ -1,71 +1,106 @@
-import { useMemo } from "react";
+'use client'
+
+import { useEffect, useState, useMemo } from "react";
 
 interface WaveformProps {
   className?: string;
-  pointsCount?: number; // Плотность точек (чем больше, тем детальнее шум и волна)
+  pointsCount?: number; // Оптимально для плотного высокочастотного ЯМР шума
 }
 
-export default function Waveform({ className = "", pointsCount = 800 }: WaveformProps) {
+export default function Waveform({ className = "", pointsCount = 900 }: WaveformProps) {
   const width = 900;
   const height = 260;
   const centerY = height / 2;
 
-  // Рассчитываем ключевые зоны графика (в пикселях по оси X)
-  const noiseEndX = 100;     // Где заканчивается чистый начальный шум (x = 0..100)
-  const signalStartX = 110;    // Точка пика (всплеска) ЯМР-сигнала
-  const maxAmplitude = 100;    // Максимальная высота волны в пике
+  // Хранит текущее время анимации в миллисекундах от 0 до общего лимита
+  const [time, setTime] = useState(0);
 
+  // Константы таймингов (в мс)
+  const drawDuration = 1000;    // Этап 1: Отрисовка шума слева направо (1 сек)
+  const morphDuration = 1500;   // Этап 2: Плавная замена на хорошую волну (1.5 сек)
+  const totalDuration = drawDuration + morphDuration;
+
+  useEffect(() => {
+    let start: number | null = null;
+
+    function animate(timestamp: number) {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+
+      setTime(Math.min(elapsed, totalDuration));
+
+      if (elapsed < totalDuration) {
+        requestAnimationFrame(animate);
+      }
+    }
+
+    const animationFrameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [totalDuration]);
+
+  // Вычисляем два коэффициента прогресса на основе текущего времени
+  const { drawProgress, morphProgress } = useMemo(() => {
+    // 1. Прогресс прорисовки (0 до 1 в течение первой секунды)
+    const dProg = Math.min(time / drawDuration, 1);
+
+    // 2. Прогресс морфинга (0 до 1 в течение последующих 1.5 секунд)
+    let mProg = 0;
+    if (time > drawDuration) {
+      const morphElapsed = time - drawDuration;
+      const linearMorph = Math.min(morphElapsed / morphDuration, 1);
+      // Применяем плавность (easing), чтобы волна разглаживалась мягко
+      mProg = linearMorph < 0.5 
+        ? 2 * linearMorph * linearMorph 
+        : 1 - Math.pow(-2 * linearMorph + 2, 2) / 2;
+    }
+
+    return { drawProgress: dProg, morphProgress: mProg };
+  }, [time, drawDuration, morphDuration]);
+
+  // Генерация динамической математической кривой
   const dPath = useMemo(() => {
     const pathPoints: string[] = [];
+    
+    // Текущий предел видимости линии по оси X (для эффекта прорисовки)
+    const currentMaxX = width * drawProgress;
 
     for (let x = 0; x <= width; x += width / pointsCount) {
-      let y = centerY;
+      // Прекращаем считать точки, если график еще не дорисован до этой координаты X
+      if (x > currentMaxX && drawProgress < 1) break;
 
-      if (x < noiseEndX) {
-        // --- ФАЗА 1: Чистый начальный шум (Мертвое время детектора) ---
-        // Генерируем псевдослучайный шум на основе функции Math.sin с высокой частотой
-        const noise = (Math.sin(x * 1.9) + Math.cos(x * 3.7) + Math.sin(x * 5.1)) / 3;
-        const noiseAmplitude = 12; // Высота шума в начале
-        y = centerY - noise * noiseAmplitude;
+      // --- 1. Модель ШУМНОГО сигнала (Верхний график) ---
+      const highFreqNoise = (
+        Math.sin(x * 1.1) * 0.45 + 
+        Math.cos(x * 2.7) * 0.35 + 
+        Math.sin(x * 5.3) * 0.2
+      );
+      // Огибающая форма шумного сигнала: спад в начале, подъем и затухание
+      const upperEnvelope = Math.exp(-0.0035 * x) * 65 + Math.sin(x * 0.015) * 15;
+      const upperSignalY = highFreqNoise * Math.max(0, upperEnvelope);
 
-      } else if (x >= noiseEndX && x < signalStartX) {
-        // --- ПЕРЕХОД: Взлет к пику ЯМР (Резкий импульс вверх/вниз) ---
-        // Плавно соединяем последнюю точку шума с вершиной основного сигнала
-        const t = (x - noiseEndX) / (signalStartX - noiseEndX);
-        // Интерполяция к началу синусоиды
-        const signalAtStart = maxAmplitude * Math.sin(0); 
-        const noiseAtEnd = ((Math.sin(noiseEndX * 1.9) + Math.cos(noiseEndX * 3.7)) / 3) * 12;
-        
-        y = centerY - (noiseAtEnd * (1 - t) + signalAtStart * t);
+      // --- 2. Модель ХОРОШЕГО сигнала (Нижний график) ---
+      const lowerDecay = Math.exp(-0.006 * x);
+      const lowerFreq = 0.16; // Приятная чистая частота
+      const lowerSignalY = Math.sin(lowerFreq * x) * 105 * lowerDecay;
 
-      } else {
-        // --- ФАЗА 2 и 3: Основной ЯМР-сигнал + Экспоненциальное затухание ---
-        // xRelative — расстояние от точки импульса (начинается с 0)
-        const xRelative = x - signalStartX;
+      // --- 3. Смешивание (Морфинг) во времени ---
+      // Сначала morphProgress равен 0 (видим только верхний шум).
+      // По мере роста morphProgress линия превращается в нижний чистый график.
+      const mixedY = centerY - ((1 - morphProgress) * upperSignalY + morphProgress * lowerSignalY);
 
-        // Формула затухания (decay = 0.007). Чем дальше вправо, тем ближе к 0
-        const damping = Math.exp(-0.007 * xRelative);
+      // Микро-шум окружения, который слегка затухает, чтобы линия в конце не была стерильной
+      const residualNoise = (Math.sin(x * 1.8) * 1.2) * Math.exp(-0.002 * x) * (1 - morphProgress * 0.8);
+      const finalY = mixedY - residualNoise;
 
-        // Основная синусоида (частота = 0.18)
-        const frequency = 0.18;
-        const mainSignal = Math.sin(frequency * xRelative);
-
-        // Добавляем остаточный микро-шум интернета/окружения (чтобы сигнал в конце не был стерильным)
-        const backgroundNoise = (Math.sin(x * 2.5) * 2) * damping;
-
-        y = centerY - (maxAmplitude * damping * mainSignal + backgroundNoise);
-      }
-
-      // Формируем SVG команду: M для старта, L для продолжения линии
       if (x === 0) {
-        pathPoints.push(`M ${x.toFixed(1)} ${y.toFixed(1)}`);
+        pathPoints.push(`M ${x.toFixed(1)} ${finalY.toFixed(1)}`);
       } else {
-        pathPoints.push(`L ${x.toFixed(1)} ${y.toFixed(1)}`);
+        pathPoints.push(`L ${x.toFixed(1)} ${finalY.toFixed(1)}`);
       }
     }
 
     return pathPoints.join(" ");
-  }, [pointsCount, centerY, width]);
+  }, [drawProgress, morphProgress, pointsCount, centerY, width]);
 
   return (
     <svg
@@ -75,17 +110,18 @@ export default function Waveform({ className = "", pointsCount = 800 }: Waveform
       xmlns="http://w3.org"
       aria-hidden="true"
     >
-      {/* Фоновая сетка для красоты (опционально, можно удалить) */}
+      {/* Центральная осевая линия */}
       <line x1="0" y1={centerY} x2={width} y2={centerY} stroke="#E2E5EA" strokeWidth="1" />
       
-      {/* Единый совмещенный ЯМР сигнал (Шум -> Пик -> Затухание) */}
+      {/* Последовательно анимируемый ЯМР-сигнал */}
       <path
-        className="waveform-path"
         d={dPath}
         stroke="#0E7C86"
-        strokeWidth="2.5"
+        // Во время шума линия тоньше (0.9), при чистой волне становится плотнее (2)
+        strokeWidth={0.9 + morphProgress * 1.1} 
         strokeLinecap="round"
         strokeLinejoin="round"
+        style={{ transition: "stroke-width 0.2s ease" }}
       />
     </svg>
   );
