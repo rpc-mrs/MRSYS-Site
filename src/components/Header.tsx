@@ -138,9 +138,13 @@ export default function Header() {
             Продукция
           </Link>
 
-          <p className="px-3 pt-3 pb-1 font-mono text-xs uppercase tracking-widest text-muted">
+          <Link
+            href="/services"
+            onClick={closeAll}
+            className="block rounded-lg px-3 py-2.5 text-sm font-medium text-ink/80 transition-colors hover:bg-steel-50 hover:text-steel-700"
+          >
             Услуги
-          </p>
+          </Link>
           {services.map((s) => (
             <Link
               key={s.slug}
