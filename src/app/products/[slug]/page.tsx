@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ProductImage from "@/components/ProductImage";
+import ProductTabs from "@/components/ProductTabs";
 import { notFound } from "next/navigation";
 import { getProduct, products } from "@/lib/products";
 import { SITE_URL } from "@/lib/site";
@@ -96,42 +97,7 @@ export default async function ProductPage({
         </div>
       )}
 
-      <div className="mt-14 grid gap-10 md:grid-cols-[1.4fr_1fr]">
-        <div className="space-y-4">
-          <p className="eyebrow">Описание</p>
-          {product.description.map((para, i) => (
-            <p key={i} className="text-muted">
-              {para}
-            </p>
-          ))}
-        </div>
-
-        <div>
-          <p className="eyebrow">Характеристики</p>
-          <dl className="mt-4 divide-y divide-line rounded-2xl border border-line bg-white">
-            {product.specs.map((spec) => (
-              <div key={spec.label} className="flex flex-col gap-1 px-5 py-4 sm:flex-row sm:justify-between sm:gap-4">
-                <dt className="text-sm font-medium text-ink">{spec.label}</dt>
-                <dd className="font-mono text-sm text-muted sm:text-right">{spec.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </div>
-
-      {product.features && (
-        <div className="mt-14">
-          <p className="eyebrow mb-4">Особенности</p>
-          <ul className="space-y-3">
-            {product.features.map((f, i) => (
-              <li key={i} className="flex gap-3 text-muted">
-                <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
-                <span>{f}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <ProductTabs product={product} />
 
       <div className="mt-14 rounded-2xl border border-line bg-white p-8 text-center">
         <p className="font-display text-xl font-bold text-ink">
