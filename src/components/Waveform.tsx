@@ -1,35 +1,91 @@
-export default function Waveform({ className = "" }: { className?: string }) {
-  // A free induction decay curve — the characteristic signal shape of an NMR
-  // measurement (fast oscillation, exponentially damped). Used as the site's
-  // one signature graphic rather than a generic chart or icon.
+import { useMemo } from "react";
+
+interface WaveformProps {
+  className?: string;
+  pointsCount?: number; // Плотность точек (чем больше, тем детальнее шум и волна)
+}
+
+export default function Waveform({ className = "", pointsCount = 800 }: WaveformProps) {
+  const width = 900;
+  const height = 260;
+  const centerY = height / 2;
+
+  // Рассчитываем ключевые зоны графика (в пикселях по оси X)
+  const noiseEndX = 100;     // Где заканчивается чистый начальный шум (x = 0..100)
+  const signalStartX = 110;    // Точка пика (всплеска) ЯМР-сигнала
+  const maxAmplitude = 100;    // Максимальная высота волны в пике
+
+  const dPath = useMemo(() => {
+    const pathPoints: string[] = [];
+
+    for (let x = 0; x <= width; x += width / pointsCount) {
+      let y = centerY;
+
+      if (x < noiseEndX) {
+        // --- ФАЗА 1: Чистый начальный шум (Мертвое время детектора) ---
+        // Генерируем псевдослучайный шум на основе функции Math.sin с высокой частотой
+        const noise = (Math.sin(x * 1.9) + Math.cos(x * 3.7) + Math.sin(x * 5.1)) / 3;
+        const noiseAmplitude = 12; // Высота шума в начале
+        y = centerY - noise * noiseAmplitude;
+
+      } else if (x >= noiseEndX && x < signalStartX) {
+        // --- ПЕРЕХОД: Взлет к пику ЯМР (Резкий импульс вверх/вниз) ---
+        // Плавно соединяем последнюю точку шума с вершиной основного сигнала
+        const t = (x - noiseEndX) / (signalStartX - noiseEndX);
+        // Интерполяция к началу синусоиды
+        const signalAtStart = maxAmplitude * Math.sin(0); 
+        const noiseAtEnd = ((Math.sin(noiseEndX * 1.9) + Math.cos(noiseEndX * 3.7)) / 3) * 12;
+        
+        y = centerY - (noiseAtEnd * (1 - t) + signalAtStart * t);
+
+      } else {
+        // --- ФАЗА 2 и 3: Основной ЯМР-сигнал + Экспоненциальное затухание ---
+        // xRelative — расстояние от точки импульса (начинается с 0)
+        const xRelative = x - signalStartX;
+
+        // Формула затухания (decay = 0.007). Чем дальше вправо, тем ближе к 0
+        const damping = Math.exp(-0.007 * xRelative);
+
+        // Основная синусоида (частота = 0.18)
+        const frequency = 0.18;
+        const mainSignal = Math.sin(frequency * xRelative);
+
+        // Добавляем остаточный микро-шум интернета/окружения (чтобы сигнал в конце не был стерильным)
+        const backgroundNoise = (Math.sin(x * 2.5) * 2) * damping;
+
+        y = centerY - (maxAmplitude * damping * mainSignal + backgroundNoise);
+      }
+
+      // Формируем SVG команду: M для старта, L для продолжения линии
+      if (x === 0) {
+        pathPoints.push(`M ${x.toFixed(1)} ${y.toFixed(1)}`);
+      } else {
+        pathPoints.push(`L ${x.toFixed(1)} ${y.toFixed(1)}`);
+      }
+    }
+
+    return pathPoints.join(" ");
+  }, [pointsCount, centerY, width]);
+
   return (
     <svg
-      viewBox="0 0 900 260"
+      viewBox={`0 0 ${width} ${height}`}
       fill="none"
       className={className}
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="http://w3.org"
       aria-hidden="true"
     >
-      <line x1="0" y1="130" x2="900" y2="130" stroke="#E2E5EA" strokeWidth="1" />
+      {/* Фоновая сетка для красоты (опционально, можно удалить) */}
+      <line x1="0" y1={centerY} x2={width} y2={centerY} stroke="#E2E5EA" strokeWidth="1" />
+      
+      {/* Единый совмещенный ЯМР сигнал (Шум -> Пик -> Затухание) */}
       <path
         className="waveform-path"
-        d="M0,130
-           C10,60 20,200 30,130
-           C40,70 50,190 60,130
-           C70,80 80,180 90,130
-           C100,85 110,175 120,130
-           C135,90 150,170 165,130
-           C180,95 195,165 210,130
-           C230,100 250,160 270,130
-           C295,105 320,155 345,130
-           C375,110 405,150 435,130
-           C470,115 505,145 540,130
-           C580,118 620,142 660,130
-           C700,121 740,139 780,130
-           C815,124 850,136 900,130"
+        d={dPath}
         stroke="#0E7C86"
         strokeWidth="2.5"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
