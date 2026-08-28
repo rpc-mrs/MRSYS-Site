@@ -81,7 +81,6 @@ export default async function ProductPage({
           ))}
         </div>
 
-        {/* Gallery */}
         <div className="grid gap-4">
           {product.images.map((img) => (
             <ProductImage key={img.src} src={img.src} alt={img.alt} />

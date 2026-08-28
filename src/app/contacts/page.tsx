@@ -8,7 +8,7 @@ export default function ContactsPage() {
     email: "",
     phone: "",
     message: "",
-    alias: "", // honeypot field — real users never fill this in
+    alias: "",
   });
 
   const [status, setStatus] = useState<{
@@ -76,12 +76,10 @@ export default function ContactsPage() {
       </div>
 
       <div className="mb-12 grid items-start gap-12 md:grid-cols-5">
-        {/* Форма */}
         <div className="rounded-2xl border border-line bg-white p-8 shadow-sm md:col-span-3">
           <h2 className="mb-6 text-2xl font-bold text-ink">Напишите нам</h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Honeypot — hidden from real users, bots tend to fill every field */}
             <div className="hidden" aria-hidden="true">
               <input
                 type="text"
@@ -176,7 +174,6 @@ export default function ContactsPage() {
           </form>
         </div>
 
-        {/* Прямые контакты */}
         <div className="space-y-8 py-2 md:col-span-2">
           <div>
             <h2 className="mb-6 text-2xl font-bold text-ink">Прямые контакты</h2>
