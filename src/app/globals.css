@@ -4,6 +4,7 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -36,32 +37,6 @@ body {
   background-size: 40px 40px;
 }
 
-/* Signature element: NMR resonance waveform, drawn once on load */
-.waveform-path {
-  stroke-dasharray: 1400;
-  stroke-dashoffset: 1400;
-  animation: draw-waveform 2.4s ease-out forwards;
-}
-
-@keyframes draw-waveform {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .waveform-path {
-    animation: none;
-    stroke-dashoffset: 0;
-  }
-  html {
-    scroll-behavior: auto;
-  }
-  .stat-flip {
-    animation: none;
-  }
-}
-
 /* Stats carousel: each pair "flips" in like a page turn when it appears */
 .stat-flip {
   animation: stat-flip-in 0.5s ease-out;
@@ -79,21 +54,11 @@ body {
   }
 }
 
-.waveform-path {
-  /* Задаем длину контура с запасом */
-  stroke-dasharray: 3000;
-  stroke-dashoffset: 3000;
-  
-  /* Запускаем анимацию прорисовки */
-  animation: drawWaveform 3.5s ease-out forwards;
-}
-
-@keyframes drawWaveform {
-  to {
-    stroke-dashoffset: 0;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-}
-
-html {
-  scrollbar-gutter: stable;
+  .stat-flip {
+    animation: none;
+  }
 }

@@ -1,128 +1,130 @@
 'use client'
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface WaveformProps {
   className?: string;
-  pointsCount?: number; // Оптимально для плотного высокочастотного ЯМР шума
 }
 
-export default function Waveform({ className = "", pointsCount = 900 }: WaveformProps) {
-  const width = 900;
-  const height = 260;
-  const centerY = height / 2;
+export default function Waveform({ className = "" }: WaveformProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  
+  // Храним динамические размеры, полученные от родительского контейнера
+  const [{ width, height }, setDimensions] = useState({ width: 0, height: 0 });
 
-  // Хранит текущее время анимации в миллисекундах от 0 до общего лимита
-  const [time, setTime] = useState(0);
+  // Следим за изменением размеров экрана (инициализируется и на десктопе, и на мобилках)
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-  // Константы таймингов (в мс)
-  const drawDuration = 1000;    // Этап 1: Отрисовка шума слева направо (1 сек)
-  const morphDuration = 1500;   // Этап 2: Плавная замена на хорошую волну (1.5 сек)
-  const totalDuration = drawDuration + morphDuration;
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width: containerWidth } = entry.contentRect;
+        // Высота фиксированная (130px), а ширина тянется вслед за текстом
+        setDimensions({ width: containerWidth, height: 130 });
+      }
+    });
+
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, []);
 
   useEffect(() => {
-    let start: number | null = null;
+    const canvas = canvasRef.current;
+    if (!canvas || width === 0) return;
+    
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D | null;
+    if (!ctx) return;
 
-    function animate(timestamp: number) {
-      if (!start) start = timestamp;
+    const centerY = height / 2;
+    let animationFrameId: number;
+    const start = performance.now();
+    const drawDuration = 1000;
+    const morphDuration = 1500;
+    const totalDuration = drawDuration + morphDuration;
+
+    function render(timestamp: number) {
+      if (!ctx) return;
+
       const elapsed = timestamp - start;
+      const time = Math.min(elapsed, totalDuration);
 
-      setTime(Math.min(elapsed, totalDuration));
+      const drawProgress = Math.min(time / drawDuration, 1);
+      
+      let morphProgress = 0;
+      if (time > drawDuration) {
+        const linearMorph = Math.min((time - drawDuration) / morphDuration, 1);
+        morphProgress = linearMorph < 0.5 
+          ? 2 * linearMorph * linearMorph 
+          : 1 - Math.pow(-2 * linearMorph + 2, 2) / 2;
+      }
+
+      ctx.clearRect(0, 0, width, height);
+
+      // 1. Осевая линия
+      ctx.beginPath();
+      ctx.strokeStyle = "#E2E5EA";
+      ctx.lineWidth = 1;
+      ctx.moveTo(0, centerY);
+      ctx.lineTo(width, centerY);
+      ctx.stroke();
+
+      // 2. ЯМР-кривая
+      ctx.beginPath();
+      ctx.strokeStyle = "#0E7C86";
+      ctx.lineWidth = 0.6 + morphProgress * 0.8; 
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      const currentMaxX = width * drawProgress;
+      const step = 1; 
+
+      for (let x = 0; x <= currentMaxX; x += step) {
+        // Динамический коэффициент масштабирования: волна всегда гармонично 
+        // распределяется по всей ширине холста, будь то 300px или 700px
+        const scaleX = (x / width) * 900; 
+
+        // Шумный сигнал
+        const highFreqNoise = Math.sin(scaleX * 1.1) * 0.45 + Math.cos(scaleX * 2.7) * 0.35 + Math.sin(scaleX * 5.3) * 0.2;
+        const upperEnvelope = Math.exp(-0.0035 * scaleX) * 32 + Math.sin(scaleX * 0.015) * 7;
+        const upperSignalY = highFreqNoise * Math.max(0, upperEnvelope);
+
+        // Чистый сигнал
+        const lowerDecay = Math.exp(-0.006 * scaleX);
+        const lowerSignalY = Math.sin(0.16 * scaleX) * 52 * lowerDecay;
+
+        // Смешивание
+        const mixedY = centerY - ((1 - morphProgress) * upperSignalY + morphProgress * lowerSignalY);
+        const residualNoise = (Math.sin(scaleX * 1.8) * 0.6) * Math.exp(-0.002 * scaleX) * (1 - morphProgress * 0.8);
+        const finalY = mixedY - residualNoise;
+
+        if (x === 0) {
+          ctx.moveTo(x, finalY);
+        } else {
+          ctx.lineTo(x, finalY);
+        }
+      }
+      ctx.stroke();
 
       if (elapsed < totalDuration) {
-        requestAnimationFrame(animate);
+        animationFrameId = requestAnimationFrame(render);
       }
     }
 
-    const animationFrameId = requestAnimationFrame(animate);
+    animationFrameId = requestAnimationFrame(render);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [totalDuration]);
-
-  // Вычисляем два коэффициента прогресса на основе текущего времени
-  const { drawProgress, morphProgress } = useMemo(() => {
-    // 1. Прогресс прорисовки (0 до 1 в течение первой секунды)
-    const dProg = Math.min(time / drawDuration, 1);
-
-    // 2. Прогресс морфинга (0 до 1 в течение последующих 1.5 секунд)
-    let mProg = 0;
-    if (time > drawDuration) {
-      const morphElapsed = time - drawDuration;
-      const linearMorph = Math.min(morphElapsed / morphDuration, 1);
-      // Применяем плавность (easing), чтобы волна разглаживалась мягко
-      mProg = linearMorph < 0.5 
-        ? 2 * linearMorph * linearMorph 
-        : 1 - Math.pow(-2 * linearMorph + 2, 2) / 2;
-    }
-
-    return { drawProgress: dProg, morphProgress: mProg };
-  }, [time, drawDuration, morphDuration]);
-
-  // Генерация динамической математической кривой
-  const dPath = useMemo(() => {
-    const pathPoints: string[] = [];
-    
-    // Текущий предел видимости линии по оси X (для эффекта прорисовки)
-    const currentMaxX = width * drawProgress;
-
-    for (let x = 0; x <= width; x += width / pointsCount) {
-      // Прекращаем считать точки, если график еще не дорисован до этой координаты X
-      if (x > currentMaxX && drawProgress < 1) break;
-
-      // --- 1. Модель ШУМНОГО сигнала (Верхний график) ---
-      const highFreqNoise = (
-        Math.sin(x * 1.1) * 0.45 + 
-        Math.cos(x * 2.7) * 0.35 + 
-        Math.sin(x * 5.3) * 0.2
-      );
-      // Огибающая форма шумного сигнала: спад в начале, подъем и затухание
-      const upperEnvelope = Math.exp(-0.0035 * x) * 65 + Math.sin(x * 0.015) * 15;
-      const upperSignalY = highFreqNoise * Math.max(0, upperEnvelope);
-
-      // --- 2. Модель ХОРОШЕГО сигнала (Нижний график) ---
-      const lowerDecay = Math.exp(-0.006 * x);
-      const lowerFreq = 0.16; // Приятная чистая частота
-      const lowerSignalY = Math.sin(lowerFreq * x) * 105 * lowerDecay;
-
-      // --- 3. Смешивание (Морфинг) во времени ---
-      // Сначала morphProgress равен 0 (видим только верхний шум).
-      // По мере роста morphProgress линия превращается в нижний чистый график.
-      const mixedY = centerY - ((1 - morphProgress) * upperSignalY + morphProgress * lowerSignalY);
-
-      // Микро-шум окружения, который слегка затухает, чтобы линия в конце не была стерильной
-      const residualNoise = (Math.sin(x * 1.8) * 1.2) * Math.exp(-0.002 * x) * (1 - morphProgress * 0.8);
-      const finalY = mixedY - residualNoise;
-
-      if (x === 0) {
-        pathPoints.push(`M ${x.toFixed(1)} ${finalY.toFixed(1)}`);
-      } else {
-        pathPoints.push(`L ${x.toFixed(1)} ${finalY.toFixed(1)}`);
-      }
-    }
-
-    return pathPoints.join(" ");
-  }, [drawProgress, morphProgress, pointsCount, centerY, width]);
+  }, [width, height]); // Перезапускаем анимацию, если изменился размер экрана
 
   return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      fill="none"
-      className={className}
-      xmlns="http://w3.org"
-      aria-hidden="true"
-    >
-      {/* Центральная осевая линия */}
-      <line x1="0" y1={centerY} x2={width} y2={centerY} stroke="#E2E5EA" strokeWidth="1" />
-      
-      {/* Последовательно анимируемый ЯМР-сигнал */}
-      <path
-        d={dPath}
-        stroke="#0E7C86"
-        // Во время шума линия тоньше (0.9), при чистой волне становится плотнее (2)
-        strokeWidth={0.9 + morphProgress * 1.1} 
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        style={{ transition: "stroke-width 0.2s ease" }}
+    // Обертка-контейнер задает максимальную ширину в соответствии с контентом страницы
+    <div ref={containerRef} className="w-full max-w-2xl">
+      <canvas
+        ref={canvasRef}
+        width={width}
+        height={height}
+        className={`block w-full h-auto ${className}`} 
       />
-    </svg>
+    </div>
   );
 }
