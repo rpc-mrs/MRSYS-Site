@@ -134,7 +134,7 @@ export default function Home() {
               <h3 className="font-display text-lg font-bold text-ink group-hover:text-steel-700">
                 {p.name}
               </h3>
-              <p className="mt-2 text-sm text-muted">{p.tagline}</p>
+              <p className="mt-2 text-sm text-muted">{p.summary}</p>
               <span className="mt-4 inline-block text-sm font-semibold text-signal">
                 Подробнее →
               </span>

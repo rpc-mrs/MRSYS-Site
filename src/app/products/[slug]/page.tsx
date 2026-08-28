@@ -73,7 +73,7 @@ export default async function ProductPage({
           <h1 className="mt-3 font-display text-3xl font-bold text-ink sm:text-4xl">
             {product.name}
           </h1>
-          <p className="mt-4 text-lg text-muted">{product.tagline}</p>
+          <p className="mt-4 text-lg text-muted">{product.summary}</p>
           {pinnedParagraphs.map((p, i) => (
             <p key={i} className="mt-4 text-muted">
               {p}
@@ -104,7 +104,7 @@ export default async function ProductPage({
         </div>
       )}
 
-      <ProductTabs product={product} description={product.description} />
+      <ProductTabs product={product} description={product.description ?? []} />
 
       <div className="mt-14 rounded-2xl border border-line bg-white p-8 text-center">
         <p className="font-display text-xl font-bold text-ink">
