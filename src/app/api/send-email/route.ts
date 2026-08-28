@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/site";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
@@ -6,7 +7,7 @@ interface ContactPayload {
   email?: string;
   phone?: string;
   message?: string;
-  alias?: string; // honeypot — should always arrive empty
+  alias?: string;
 }
 
 function escapeHtml(value: string) {
@@ -15,7 +16,7 @@ function escapeHtml(value: string) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(/'/g, "'");
 }
 
 export async function POST(request: Request) {
@@ -28,8 +29,6 @@ export async function POST(request: Request) {
 
   const { name, email, phone, message, alias } = body;
 
-  // Honeypot: real visitors never fill this hidden field in. Pretend success
-  // so bots don't learn to leave it blank.
   if (alias) {
     return NextResponse.json({ ok: true });
   }
@@ -59,21 +58,23 @@ export async function POST(request: Request) {
   const transporter = nodemailer.createTransport({
     host: SMTP_HOST,
     port: Number(SMTP_PORT),
-    secure: Number(SMTP_PORT) === 465, // true for 465, false for 587/25
+    secure: Number(SMTP_PORT) === 465,
     auth: {
       user: SMTP_USER,
       pass: SMTP_PASSWORD,
     },
   });
 
-  const recipient = CONTACT_TO || SMTP_USER;
+  const recipient = CONTACT_TO;
 
   try {
+    const siteName = SITE_URL.replace(/^https?:\/\/(www\.)?/, "");
+
     await transporter.sendMail({
-      from: `"Заявка с сайта" <${SMTP_USER}>`,
+      from: `"Заявка с сайта ${siteName}" <${SMTP_USER}>`,
       to: recipient,
       replyTo: email,
-      subject: `Новая заявка с сайта — ${name}`,
+      subject: `Новая заявка с сайта ${siteName} — ${name}`,
       text: [
         `Имя: ${name}`,
         `Email: ${email}`,
@@ -83,7 +84,6 @@ export async function POST(request: Request) {
         message,
       ].join("\n"),
       html: `
-        <h2>Новая заявка с сайта</h2>
         <p><strong>Имя:</strong> ${escapeHtml(name)}</p>
         <p><strong>Email:</strong> ${escapeHtml(email)}</p>
         <p><strong>Телефон:</strong> ${escapeHtml(phone || "не указан")}</p>
